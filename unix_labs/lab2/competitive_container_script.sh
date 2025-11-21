@@ -46,12 +46,16 @@ if [ ${create_volume} -eq 0 ]; then
 	containers_amount="$2"
 else
 	volume_path="$2"
+	if [ -e "${volume_path}" ]; then
+		echo "Том ${volume_path} уже существует!" >&2
+		exit 13
+	fi
 	mkdir -p "${volume_path}"
 	containers_amount="$3"
 fi
 if ! [ "${containers_amount}" -eq "${containers_amount}" ] > /dev/null 2>&1 || [ "${containers_amount}" -le 0 ]; then
 	echo "Количество контейнеров указано некорректно!" >&2
-	exit 13
+	exit 14
 fi
 touch "${volume_path}/.lockfile"
 docker build -t con_cnt_image .
