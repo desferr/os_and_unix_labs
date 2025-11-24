@@ -37,6 +37,10 @@ int main() {
 	int client = -1;
 	int counter = 0;
 	while (true) {
+		if (wasSigHup == 1) {
+			cout << "Был получен сигнал SIGHUP!" << endl;
+			wasSigHup = 0;
+		}
 		int maxFd = sock;
 		fd_set fds;
 		FD_ZERO(&fds);
@@ -49,7 +53,9 @@ int main() {
 		}
 		if (pselect(maxFd + 1, &fds, NULL, NULL, NULL, &origMask) == -1) {
 			if (errno == EINTR) {
-				cout << "Был получен сигнал SIGHUP!" << endl;
+				continue;
+			} else {
+				cout << "Ошибка pselect!" << endl;
 				exit(1);
 			}
 		}
