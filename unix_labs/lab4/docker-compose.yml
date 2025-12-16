@@ -1,0 +1,17 @@
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+  controller:
+    build: ./controller
+    ports:
+      - "5000:5000"
+    depends_on:
+      - rabbitmq
+  worker:
+    build: ./worker
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 3
